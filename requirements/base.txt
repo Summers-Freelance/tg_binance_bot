@@ -1,0 +1,5 @@
+# async requests
+aiohttp[speedups]
+python-dotenv==0.21.0
+pytz==2022.6
+pandas==1.5.1
