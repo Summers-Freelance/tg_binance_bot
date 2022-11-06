@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import aiohttp
@@ -23,12 +24,18 @@ class Telegram:
             },
         )
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                url,
-                data=payload,
-                headers=self.base_headers,
-            ) as response:
-                print(await response.json())
-                response.raise_for_status()
-                return await response.json()
+        should_retry = True
+
+        while should_retry:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    url,
+                    data=payload,
+                    headers=self.base_headers,
+                ) as response:
+                    json_response = await response.json()
+                    if json_response["error_code"] == 429:
+                        asyncio.sleep([json_response["parameters"]["retry_after"]])
+                        continue
+                    response.raise_for_status()
+                    return json_response
