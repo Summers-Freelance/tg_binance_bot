@@ -1,5 +1,6 @@
 import asyncio
 import concurrent.futures
+import logging
 import os
 
 import pandas as pd
@@ -37,7 +38,11 @@ class Scrape:
                 for trader in self.traders
             ]
             for i in await asyncio.gather(*futures):
-                await i
+                try:
+                    await i
+                except Exception as e:
+                    logger = logging.getLogger()
+                    logger.error(e, exc_info=True)
 
     async def process_trader(self, trader: dict[str, str]):
         """Look for position changes for trader.
@@ -136,12 +141,12 @@ class Scrape:
         # calculate profit from entry price and market price
         closed_positions_df["profit"] = (
             round(
-                100
-                - (
+                (
                     closed_positions_df["markPrice"]
                     / closed_positions_df["entryPrice"]
                     * 100
-                ),
+                )
+                - 100,
                 2,
             )
         ).astype(str) + " %"
