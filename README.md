@@ -18,3 +18,10 @@ async def main():
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 ```
+
+## Start scraping at interval
+
+```sh
+cd src/
+python3 -m binance_api_bot.main
+```

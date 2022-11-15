@@ -139,23 +139,19 @@ class Scrape:
         ]
 
         # calculate profit from entry price and market price
-        closed_positions_df["profit"] = (
-            round(
-                (
-                    closed_positions_df["markPrice"]
-                    / closed_positions_df["entryPrice"]
-                    * 100
-                )
-                - 100,
-                2,
-            )
-        ).astype(str) + " %"
+        closed_positions_df["profit"] = round(
+            (closed_positions_df["entryPrice"] - closed_positions_df["markPrice"])
+            / closed_positions_df["markPrice"]
+            * 100,
+            2,
+        )
 
-        closed_df_keys = ["symbol", "profit", "markPrice"]
+        closed_df_keys = ["symbol", "markPrice"]
         # send message for closed positions
         for _, position in closed_positions_df.iterrows():
 
             msg = f"Trade closed ✅\n\n<b>Trader</b>: {trader['name']}\n"  # noqa: E501
+            msg += f"<b>{'Profit' if position['profit'] >=0 else 'Lose'}</b>: {position['profit']}\n"
 
             for k in closed_df_keys:
                 msg += f"<b>{k.title()}</b>: {position[k]}\n"
