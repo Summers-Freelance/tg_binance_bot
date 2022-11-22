@@ -151,7 +151,7 @@ class Scrape:
         for _, position in closed_positions_df.iterrows():
 
             msg = f"Trade closed ✅\n\n<b>Trader</b>: {trader['name']}\n"  # noqa: E501
-            msg += f"<b>{'Profit' if position['profit'] >=0 else 'Lose'}</b>: {position['profit']}\n"
+            msg += f"<b>{'Profit' if position['profit'] >=0 else 'Lose'}</b>: {position['profit']} %\n"
 
             for k in closed_df_keys:
                 msg += f"<b>{k.title()}</b>: {position[k]}\n"
